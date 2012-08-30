@@ -2,6 +2,7 @@
 
 #include <error.h>
 #include <immintrin.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>
@@ -18,6 +19,7 @@ static inline void usage() {
 	error(1, 0, "Usage: x86gflops sse|sse2|avx [n]");
 }
 
+static int64_t e[4] = { 0 };
 static float fp[128] __attribute__ ((aligned(32))) = { .0f };
 
 int main(int argc, char* argv[]) {
@@ -56,21 +58,29 @@ int main(int argc, char* argv[]) {
 			__m256 ad = _mm256_load_ps(fp + 104);
 			__m256 ae = _mm256_load_ps(fp + 112);
 			__m256 af = _mm256_load_ps(fp + 120);
+			__m64 b0 = _mm_cvtsi64_m64(e[0]);
+			__m64 b1 = _mm_cvtsi64_m64(e[1]);
+			__m64 b2 = _mm_cvtsi64_m64(e[2]);
+			__m64 b3 = _mm_cvtsi64_m64(e[3]);
 			for(int i = 0; i < 500000000; ++i) {
 				a0 = _mm256_add_ps(a0, a0);
 				a1 = _mm256_mul_ps(a1, a1);
+				b0 = _mm_add_pi32(b0, b0);
 				a2 = _mm256_add_ps(a2, a2);
 				a3 = _mm256_mul_ps(a3, a3);
 				a4 = _mm256_add_ps(a4, a4);
 				a5 = _mm256_mul_ps(a5, a5);
+				b1 = _mm_add_pi32(b1, b1);
 				a6 = _mm256_add_ps(a6, a6);
 				a7 = _mm256_mul_ps(a7, a7);
 				a8 = _mm256_add_ps(a8, a8);
 				a9 = _mm256_mul_ps(a9, a9);
+				b2 = _mm_add_pi32(b2, b2);
 				aa = _mm256_add_ps(aa, aa);
 				ab = _mm256_mul_ps(ab, ab);
 				ac = _mm256_add_ps(ac, ac);
 				ad = _mm256_mul_ps(ad, ad);
+				b3 = _mm_add_pi32(b3, b3);
 				ae = _mm256_add_ps(ae, ae);
 				af = _mm256_mul_ps(af, af);
 			}
@@ -81,6 +91,7 @@ int main(int argc, char* argv[]) {
 				_mm256_add_ps(
 					_mm256_add_ps(_mm256_add_ps(a8, a9), _mm256_add_ps(aa, ab)),
 					_mm256_add_ps(_mm256_add_ps(ac, ad), _mm256_add_ps(ae, af)))));
+			*e = _mm_cvtm64_si64(_mm_add_pi32(_mm_add_pi32(b0, b1), _mm_add_pi32(b2, b3)));
 		} else if(mode == SSE) {
 $$	foreach my $b(0 .. 1) {
 #ifndef SSE2
