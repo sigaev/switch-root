@@ -7,8 +7,10 @@
 #include <strings.h>
 #include <sys/time.h>
 
-void stress_sse(float *);
-void stress_sse2(float *);
+void stress_sse_8(float *);
+void stress_sse2_8(float *);
+void stress_sse_16(float *);
+void stress_sse2_16(float *);
 
 static inline unsigned long long mytime() {
 	struct timeval tv;
@@ -18,7 +20,7 @@ static inline unsigned long long mytime() {
 }
 
 static inline void usage() {
-	error(1, 0, "Usage: x86gflops sse|sse2|avx [n]");
+	error(1, 0, "Usage: x86gflops sse-8|sse2-8|sse-16|sse2-16|avx [n]");
 }
 
 static float fp[128] __attribute__ ((aligned(32))) = { .0f };
@@ -28,12 +30,16 @@ int main(int argc, char* argv[]) {
 		usage();
 	}
 	enum {
-		SSE, SSE2, AVX
+		SSE_8, SSE2_8, SSE_16, SSE2_16, AVX
 	} mode;
-	if(!strcasecmp(argv[1], "sse")) {
-		mode = SSE;
-	} else if(!strcasecmp(argv[1], "sse2")) {
-		mode = SSE2;
+	if(!strcasecmp(argv[1], "sse-8")) {
+		mode = SSE_8;
+	} else if(!strcasecmp(argv[1], "sse2-8")) {
+		mode = SSE2_8;
+	} else if(!strcasecmp(argv[1], "sse-16")) {
+		mode = SSE_16;
+	} else if(!strcasecmp(argv[1], "sse2-16")) {
+		mode = SSE2_16;
 	} else if(!strcasecmp(argv[1], "avx")) {
 		mode = AVX;
 	} else {
@@ -84,13 +90,17 @@ int main(int argc, char* argv[]) {
 				_mm256_add_ps(
 					_mm256_add_ps(_mm256_add_ps(a8, a9), _mm256_add_ps(aa, ab)),
 					_mm256_add_ps(_mm256_add_ps(ac, ad), _mm256_add_ps(ae, af)))));
-		} else if(mode == SSE) {
-			stress_sse(fp);
+		} else if(mode == SSE_8) {
+			stress_sse_8(fp);
+		} else if(mode == SSE2_8) {
+			stress_sse2_8(fp);
+		} else if(mode == SSE_16) {
+			stress_sse_16(fp);
 		} else {
-			stress_sse2(fp);
+			stress_sse2_16(fp);
 		}
-		printf("%.3f Gflops\n", (mode == AVX ? 64e6 : (mode == SSE ? 32e6 : 16e6))
-			/ (double)(mytime() - t));
+		printf("%.3f Gflops\n", (mode == AVX ? 64e6 :
+			(mode == SSE_8 || mode == SSE_16 ? 32e6 : 16e6)) / (double)(mytime() - t));
 	}
 	while(0 < --n);
 
