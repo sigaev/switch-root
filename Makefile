@@ -1,4 +1,5 @@
 install:
 	gcc -O2 -pipe -Xlinker -s -o switch_root switch_root.c
-	./pp.pl x86gflops.c | gcc -O2 -mavx -pipe -Wall -Xlinker -s -o x86gflops -x c -std=c99 -
+	gcc -O2 -mavx -pipe -Wall -c -o x86gflops.o -std=c99 x86gflops.c
+	./pp.pl x86gflops-sse.c | gcc -O2 -pipe -Wall -Xlinker -s -o x86gflops x86gflops.o -x c -std=c99 -
 	install -m755 -t/usr/local/bin pp.pl switch_root x86gflops
