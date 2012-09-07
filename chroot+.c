@@ -6,14 +6,12 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-static const char root[] = "/mnt";
-
-static int chroot_plus(bool undo) {
+static int chroot_plus(bool plus) {
 	DIR* dir = opendir(".");
 	if(!dir) return errno;
 	if(!chdir("/"))
-	if(!chroot(root))
-	if(!undo || !chroot("../../../.."))
+	if(!chroot("mnt"))
+	if(plus || !chroot("../../../.."))
 	if(!fchdir(dirfd(dir)))
 		return closedir(dir) ? errno : 0;
 	const int err = errno;
@@ -22,10 +20,10 @@ static int chroot_plus(bool undo) {
 }
 
 int main(int argc, char* argv[]) {
-	const int err = chroot_plus(strstr(argv[0], "undo"));
+	const int err = chroot_plus(index(argv[0], '+'));
 	if(setuid(getuid())) return 1;  // Do not report errors while root.
 	if(err) {
-		error(1, err, "chroot(%s)", root);
+		error(1, err, "chroot_plus()");
 	}
 	if(argc < 2) {
 		error(1, 0, "Usage: %s PROGRAM [ARGUMENTS]", argv[0]);
