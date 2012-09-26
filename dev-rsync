@@ -7,19 +7,17 @@ import sys
 SIZE_BLOCK = 4096
 
 size_f = os.stat( sys.argv[ 2 ] ).st_size
-assert( 0 == size_f % SIZE_BLOCK )
+assert 0 == size_f % SIZE_BLOCK
 num_overwritten_blocks = 0
 with open( sys.argv[ 1 ], 'rb' ) as f_a:
 	with open( sys.argv[ 2 ], 'r+b' ) as f_b:
-		for i in range( size_f // SIZE_BLOCK ):
-			buf_a = f_a.read( SIZE_BLOCK )
-			assert( len( buf_a ) == SIZE_BLOCK )
-			buf_b = f_b.read( SIZE_BLOCK )
-			assert( len( buf_b ) == SIZE_BLOCK )
+		for i_block in range( size_f // SIZE_BLOCK ):
+			buf_a, buf_b = ( f.read( SIZE_BLOCK ) for f in ( f_a, f_b ) )
+			assert SIZE_BLOCK == len( buf_a ) == len( buf_b )
 			if hashlib.md5( buf_a ).digest() != hashlib.md5( buf_b ).digest():
-				f_b.seek( i * SIZE_BLOCK )
-				assert( SIZE_BLOCK == f_b.write( buf_a ) )
-				f_b.seek( ( i + 1 ) * SIZE_BLOCK )
+				f_b.seek( i_block * SIZE_BLOCK )
+				assert SIZE_BLOCK == f_b.write( buf_a )
+				f_b.seek( ( i_block + 1 ) * SIZE_BLOCK )
 				num_overwritten_blocks += 1
 
 print( 'Overwritten %.3f Mb of %.3f Mb' % (
