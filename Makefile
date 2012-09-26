@@ -5,4 +5,4 @@ install:
 	./pp.pl x86gflops-sse.c | gcc -O2 -msse2 -pipe -Wall -Xlinker -s -o x86gflops x86gflops-avx.o -x c -std=c99 - x86gflops.c
 	install -m4711 -t/usr/local/bin chroot+
 	ln -sfn chroot+ /usr/local/bin/chroot-
-	install -m755 -t/usr/local/bin pp.pl switch-root x86gflops
+	install -m755 -t/usr/local/bin dev-rsync pp.pl switch-root x86gflops
