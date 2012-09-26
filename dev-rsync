@@ -3,7 +3,7 @@
 import os
 import sys
 
-SIZE_BLOCK = 4096
+SIZE_BLOCK = 131072
 
 size_f = os.stat( sys.argv[ 2 ] ).st_size
 assert 0 == size_f % SIZE_BLOCK
