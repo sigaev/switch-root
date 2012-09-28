@@ -36,12 +36,12 @@ void stress_sse_16(float *fp) {
 		af = _mm_mul_ps(af, af);
 	}
 	_mm_store_ps(fp, _mm_add_ps(
+		_mm_mul_ps(
+			_mm_mul_ps(_mm_mul_ps(a0, a1), _mm_add_ps(a2, a3)),
+			_mm_add_ps(_mm_mul_ps(a4, a5), _mm_add_ps(a6, a7))),
 		_mm_add_ps(
-			_mm_add_ps(_mm_add_ps(a0, a1), _mm_add_ps(a2, a3)),
-			_mm_add_ps(_mm_add_ps(a4, a5), _mm_add_ps(a6, a7))),
-		_mm_add_ps(
-			_mm_add_ps(_mm_add_ps(a8, a9), _mm_add_ps(aa, ab)),
-			_mm_add_ps(_mm_add_ps(ac, ad), _mm_add_ps(ae, af)))));
+			_mm_mul_ps(_mm_mul_ps(a8, a9), _mm_add_ps(aa, ab)),
+			_mm_add_ps(_mm_mul_ps(ac, ad), _mm_add_ps(ae, af)))));
 }
 
 void stress_sse2_16(double *fp) {
@@ -80,12 +80,12 @@ void stress_sse2_16(double *fp) {
 		af = _mm_mul_pd(af, af);
 	}
 	_mm_store_pd(fp, _mm_add_pd(
+		_mm_mul_pd(
+			_mm_mul_pd(_mm_mul_pd(a0, a1), _mm_add_pd(a2, a3)),
+			_mm_add_pd(_mm_mul_pd(a4, a5), _mm_add_pd(a6, a7))),
 		_mm_add_pd(
-			_mm_add_pd(_mm_add_pd(a0, a1), _mm_add_pd(a2, a3)),
-			_mm_add_pd(_mm_add_pd(a4, a5), _mm_add_pd(a6, a7))),
-		_mm_add_pd(
-			_mm_add_pd(_mm_add_pd(a8, a9), _mm_add_pd(aa, ab)),
-			_mm_add_pd(_mm_add_pd(ac, ad), _mm_add_pd(ae, af)))));
+			_mm_mul_pd(_mm_mul_pd(a8, a9), _mm_add_pd(aa, ab)),
+			_mm_add_pd(_mm_mul_pd(ac, ad), _mm_add_pd(ae, af)))));
 }
 
 void stress_sse_8(float *fp) {

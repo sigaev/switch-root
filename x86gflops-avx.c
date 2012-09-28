@@ -36,10 +36,10 @@ void stress_avx(float *fp) {
 		af = _mm256_mul_ps(af, af);
 	}
 	_mm256_store_ps(fp, _mm256_add_ps(
+		_mm256_mul_ps(
+			_mm256_mul_ps(_mm256_mul_ps(a0, a1), _mm256_add_ps(a2, a3)),
+			_mm256_add_ps(_mm256_mul_ps(a4, a5), _mm256_add_ps(a6, a7))),
 		_mm256_add_ps(
-			_mm256_add_ps(_mm256_add_ps(a0, a1), _mm256_add_ps(a2, a3)),
-			_mm256_add_ps(_mm256_add_ps(a4, a5), _mm256_add_ps(a6, a7))),
-		_mm256_add_ps(
-			_mm256_add_ps(_mm256_add_ps(a8, a9), _mm256_add_ps(aa, ab)),
-			_mm256_add_ps(_mm256_add_ps(ac, ad), _mm256_add_ps(ae, af)))));
+			_mm256_mul_ps(_mm256_mul_ps(a8, a9), _mm256_add_ps(aa, ab)),
+			_mm256_add_ps(_mm256_mul_ps(ac, ad), _mm256_add_ps(ae, af)))));
 }
